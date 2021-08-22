@@ -62,7 +62,7 @@ class VieraClient {
     this.client.interceptors.response.use(response => {
       return response;
     }, async error => {
-      if (error.response && error.response.data) {
+      if (error.response?.data) {
         const returnXml = await this.parseXml(error.response.data);
         this.checkError(returnXml, error.response);
       }
