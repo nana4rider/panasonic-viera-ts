@@ -2,11 +2,11 @@
   "name": "panasonic-viera-ts",
   "version": "0.1.1",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dst/index.js",
+  "types": "dst/index.d.ts",
   "license": "MIT",
   "files": [
-    "dist"
+    "dst"
   ],
   "scripts": {
     "build": "tsc",
