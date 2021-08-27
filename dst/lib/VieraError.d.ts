@@ -5,3 +5,4 @@ declare class VieraError extends Error {
     constructor(response: AxiosResponse<string>, errorCode: number, message: string);
 }
 export { VieraError };
+//# sourceMappingURL=VieraError.d.ts.map

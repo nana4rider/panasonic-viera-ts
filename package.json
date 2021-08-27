@@ -9,7 +9,7 @@
     "dst"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p . --declarationMap",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

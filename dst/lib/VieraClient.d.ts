@@ -57,3 +57,4 @@ declare class VieraClient {
     private parseXml;
 }
 export { VieraClient };
+//# sourceMappingURL=VieraClient.d.ts.map
