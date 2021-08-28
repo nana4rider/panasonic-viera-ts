@@ -6,6 +6,7 @@
   "types": "dst/index.d.ts",
   "license": "ISC",
   "files": [
+    "src",
     "dst"
   ],
   "scripts": {
