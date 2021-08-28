@@ -4,7 +4,7 @@
   "private": true,
   "main": "dst/index.js",
   "types": "dst/index.d.ts",
-  "license": "MIT",
+  "license": "ISC",
   "files": [
     "dst"
   ],
