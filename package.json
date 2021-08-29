@@ -17,12 +17,12 @@
     "axios": "^0.21.1",
     "xml": "^1.0.1",
     "xmldom": "^0.6.0",
-    "xpath": "^0.0.32"
+    "xpath": "^0.0.32",
+    "@types/xml": "^1.0.6",
+    "@types/xmldom": "^0.1.31"
   },
   "devDependencies": {
     "@types/node": "^16.7.1",
-    "@types/xml": "^1.0.6",
-    "@types/xmldom": "^0.1.31",
     "@typescript-eslint/eslint-plugin": "^4.29.2",
     "@typescript-eslint/parser": "^4.29.2",
     "eslint": "^7.32.0",
@@ -30,7 +30,7 @@
   },
   "author": "nana4rider",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/nana4rider/panasonic-viera-ts.git"
+    "type": "git",
+    "url": "https://github.com/nana4rider/panasonic-viera-ts.git"
   }
 }
