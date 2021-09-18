@@ -1,6 +1,9 @@
 {
   "name": "panasonic-viera-ts",
-  "version": "0.1.1",
+  "version": "0.2.0",
+  "bin": {
+    "viera-auth-cli": "dst/auth.js"
+  },
   "main": "dst/index.js",
   "types": "dst/index.d.ts",
   "license": "ISC",
@@ -13,17 +16,18 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@types/xml": "^1.0.6",
+    "@types/xmldom": "^0.1.31",
     "axios": "^0.21.1",
     "xml": "^1.0.1",
     "xmldom": "^0.6.0",
-    "xpath": "^0.0.32",
-    "@types/xml": "^1.0.6",
-    "@types/xmldom": "^0.1.31"
+    "xpath": "^0.0.32"
   },
   "devDependencies": {
     "@types/node": "^16.7.1",
     "@typescript-eslint/eslint-plugin": "^4.29.2",
     "@typescript-eslint/parser": "^4.29.2",
+    "commander": "^8.2.0",
     "eslint": "^7.32.0",
     "typescript": "^4.1.5"
   },
