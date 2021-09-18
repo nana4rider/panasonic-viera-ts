@@ -25,6 +25,12 @@ VieraKeyMacro[VieraKey_1.VieraKey.hdmi2] = [VieraKey_1.VieraKey.input_key, Viera
 VieraKeyMacro[VieraKey_1.VieraKey.hdmi3] = [VieraKey_1.VieraKey.input_key, VieraKey_1.VieraKey.num_4];
 VieraKeyMacro[VieraKey_1.VieraKey.video] = [VieraKey_1.VieraKey.input_key, VieraKey_1.VieraKey.num_5];
 class VieraClient {
+    /**
+     * コンストラクタ
+     *
+     * @param host VIERAのIPアドレス
+     * @param auth 認証情報
+     */
     constructor(host, auth) {
         this.host = host;
         this.auth = auth;
@@ -49,14 +55,21 @@ class VieraClient {
             throw error;
         }));
     }
+    /**
+     * VIERAに接続します。
+     */
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
             this.deriveSessionKeys();
             yield this.getEncryptSessionId();
-            return this.session;
         });
     }
     // remote
+    /**
+     * VIERAの画面にPINコードを表示します。
+     *
+     * @param name VIERAに表示する名前
+     */
     displayPinCode(name = 'VieraClient') {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.postRemote('X_DisplayPinCode', {
@@ -66,6 +79,11 @@ class VieraClient {
             this.session.challenge = Buffer.from(keyText, 'base64');
         });
     }
+    /**
+     * VIERAの画面に表示されたPINコードを使い、認証を完了します。
+     *
+     * @param pincode PINコード
+     */
     requestAuth(pincode) {
         return __awaiter(this, void 0, void 0, function* () {
             const [iv, key, hmacKey] = [this.session.challenge, Buffer.alloc(16), Buffer.alloc(32)];
@@ -118,6 +136,11 @@ class VieraClient {
             return this.session.id;
         });
     }
+    /**
+     * キー(ボタン入力)を送信します。
+     *
+     * @param key 送信するキー
+     */
     sendKey(key) {
         return __awaiter(this, void 0, void 0, function* () {
             const macro = VieraKeyMacro[key];
@@ -133,6 +156,12 @@ class VieraClient {
             }
         });
     }
+    /**
+     * アプリを起動します。
+     *
+     * @param productId アプリID
+     * @see {@link VieraClient.getApps} アプリIDを取得するメソッド
+     */
     launchApp(productId) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.postRemote('X_LaunchApp', [
@@ -142,6 +171,11 @@ class VieraClient {
             return;
         });
     }
+    /**
+     * アプリのリストを取得します。
+     *
+     * @returns アプリのリスト
+     */
     getApps() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.postRemote('X_GetAppList', undefined, true);
@@ -162,7 +196,23 @@ class VieraClient {
             return vieraApps;
         });
     }
+    /**
+     * 電源がONか判定します。
+     *
+     * @returns 電源がONの場合true
+     */
+    isPowerOn() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // HACK 他に良い方法があれば…
+            return (yield this.getApps()).length !== 0;
+        });
+    }
     // rendering
+    /**
+     * 音量を取得します。
+     *
+     * @returns 音量
+     */
     getVolume() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.postRendering('GetVolume', [
@@ -173,6 +223,11 @@ class VieraClient {
             return volume;
         });
     }
+    /**
+     * 音量を設定します。
+     *
+     * @param volume 音量
+     */
     setVolume(volume) {
         return __awaiter(this, void 0, void 0, function* () {
             if (isNaN(volume) || volume < 0 || volume > 100) {
@@ -185,6 +240,11 @@ class VieraClient {
             ]);
         });
     }
+    /**
+     * ミュートかどうかを取得します。
+     *
+     * @returns ミュートの場合、true
+     */
     getMute() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.postRendering('GetMute', [
@@ -195,6 +255,11 @@ class VieraClient {
             return mute === '1';
         });
     }
+    /**
+     * ミュートを設定します。
+     *
+     * @param enable true:ミュート設定 false:ミュート解除
+     */
     setMute(enable) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.postRendering('SetMute', [
@@ -205,12 +270,22 @@ class VieraClient {
         });
     }
     // others
+    /**
+     * デバイス設定を取得します。
+     *
+     * @returns デバイス設定のドキュメント
+     */
     getDeviceInfo() {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.client.get(VieraClient.PATH_DEVICE_INFO);
             return this.parseXml(response.data);
         });
     }
+    /**
+     * 機能リストを取得します。
+     *
+     * @returns 機能リストのドキュメント
+     */
     getActionList() {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.client.get(VieraClient.PATH_ACTION_LIST);

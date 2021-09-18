@@ -19,7 +19,7 @@ type VieraApp = {
   productId: string;
   name: string;
   iconUrl: string;
-} | Record<string, never>;
+};
 
 type VieraAuth = {
   appId: string;
@@ -48,6 +48,12 @@ class VieraClient {
   private client: AxiosInstance;
   private session: VieraSession = {};
 
+  /**
+   * コンストラクタ
+   *
+   * @param host VIERAのIPアドレス
+   * @param auth 認証情報
+   */
   constructor(private host: string, public auth?: VieraAuth) {
     this.client = axios.create({
       baseURL: `http://${this.host}:${VieraClient.PORT}`,
@@ -70,14 +76,21 @@ class VieraClient {
     });
   }
 
-  async connect(): Promise<VieraSession> {
+  /**
+   * VIERAに接続します。
+   */
+  async connect(): Promise<void> {
     this.deriveSessionKeys();
     await this.getEncryptSessionId();
-    return this.session;
   }
 
   // remote
 
+  /**
+   * VIERAの画面にPINコードを表示します。
+   *
+   * @param name VIERAに表示する名前
+   */
   async displayPinCode(name = 'VieraClient'): Promise<void> {
     const result = await this.postRemote('X_DisplayPinCode', {
       X_DeviceName: name
@@ -88,6 +101,11 @@ class VieraClient {
     this.session.challenge = Buffer.from(keyText, 'base64');
   }
 
+  /**
+   * VIERAの画面に表示されたPINコードを使い、認証を完了します。
+   *
+   * @param pincode PINコード
+   */
   async requestAuth(pincode: string): Promise<VieraAuth> {
     const [iv, key, hmacKey] = [this.session.challenge, Buffer.alloc(16), Buffer.alloc(32)];
     let [i, j, l, k]: number[] = [];
@@ -127,7 +145,7 @@ class VieraClient {
     return this.auth;
   }
 
-  async getEncryptSessionId(): Promise<string> {
+  private async getEncryptSessionId(): Promise<string> {
     if (!this.auth) throw new Error('Not authenticated.');
 
     const result = await this.postRemote('X_GetEncryptSessionId', [
@@ -144,6 +162,11 @@ class VieraClient {
     return this.session.id;
   }
 
+  /**
+   * キー(ボタン入力)を送信します。
+   *
+   * @param key 送信するキー
+   */
   async sendKey(key: VieraKey): Promise<void> {
     const macro = VieraKeyMacro[key];
     if (!macro) {
@@ -159,6 +182,12 @@ class VieraClient {
     }
   }
 
+  /**
+   * アプリを起動します。
+   *
+   * @param productId アプリID
+   * @see {@link VieraClient.getApps} アプリIDを取得するメソッド
+   */
   async launchApp(productId: string): Promise<void> {
     await this.postRemote('X_LaunchApp', [
       { X_AppType: 'vc_app' },
@@ -167,6 +196,11 @@ class VieraClient {
     return;
   }
 
+  /**
+   * アプリのリストを取得します。
+   *
+   * @returns アプリのリスト
+   */
   async getApps(): Promise<VieraApp[]> {
     const result = await this.postRemote('X_GetAppList', undefined, true);
 
@@ -188,8 +222,23 @@ class VieraClient {
     return vieraApps;
   }
 
+  /**
+   * 電源がONか判定します。
+   *
+   * @returns 電源がONの場合true
+   */
+  async isPowerOn(): Promise<boolean> {
+    // HACK 他に良い方法があれば…
+    return (await this.getApps()).length !== 0;
+  }
+
   // rendering
 
+  /**
+   * 音量を取得します。
+   *
+   * @returns 音量
+   */
   async getVolume(): Promise<number> {
     const result = await this.postRendering('GetVolume', [
       { InstanceID: '0' },
@@ -201,6 +250,11 @@ class VieraClient {
     return volume;
   }
 
+  /**
+   * 音量を設定します。
+   *
+   * @param volume 音量
+   */
   async setVolume(volume: number): Promise<void> {
     if (isNaN(volume) || volume < 0 || volume > 100) {
       throw new Error('Volume must be in range from 0 to 100');
@@ -213,6 +267,11 @@ class VieraClient {
     ]);
   }
 
+  /**
+   * ミュートかどうかを取得します。
+   *
+   * @returns ミュートの場合、true
+   */
   async getMute(): Promise<boolean> {
     const result = await this.postRendering('GetMute', [
       { InstanceID: '0' },
@@ -224,6 +283,11 @@ class VieraClient {
     return mute === '1';
   }
 
+  /**
+   * ミュートを設定します。
+   *
+   * @param enable true:ミュート設定 false:ミュート解除
+   */
   async setMute(enable: boolean): Promise<void> {
     await this.postRendering('SetMute', [
       { InstanceID: '0' },
@@ -234,11 +298,21 @@ class VieraClient {
 
   // others
 
+  /**
+   * デバイス設定を取得します。
+   *
+   * @returns デバイス設定のドキュメント
+   */
   async getDeviceInfo(): Promise<Document> {
     const response = await this.client.get(VieraClient.PATH_DEVICE_INFO);
     return this.parseXml(response.data);
   }
 
+  /**
+   * 機能リストを取得します。
+   *
+   * @returns 機能リストのドキュメント
+   */
   async getActionList(): Promise<Document> {
     const response = await this.client.get(VieraClient.PATH_ACTION_LIST);
     return this.parseXml(response.data);

@@ -1,19 +1,10 @@
-/// <reference types="node" />
 import * as xml from 'xml';
 import { VieraKey } from './VieraKey';
-declare type VieraSession = {
-    key: Buffer;
-    iv: Buffer;
-    hmacKey: Buffer;
-    challenge: Buffer;
-    id: string;
-    seqNum: number;
-} | Record<string, never>;
 declare type VieraApp = {
     productId: string;
     name: string;
     iconUrl: string;
-} | Record<string, never>;
+};
 declare type VieraAuth = {
     appId: string;
     encKey: string;
@@ -31,19 +22,90 @@ declare class VieraClient {
     private static readonly MACRO_INTERVAL;
     private client;
     private session;
+    /**
+     * コンストラクタ
+     *
+     * @param host VIERAのIPアドレス
+     * @param auth 認証情報
+     */
     constructor(host: string, auth?: VieraAuth | undefined);
-    connect(): Promise<VieraSession>;
+    /**
+     * VIERAに接続します。
+     */
+    connect(): Promise<void>;
+    /**
+     * VIERAの画面にPINコードを表示します。
+     *
+     * @param name VIERAに表示する名前
+     */
     displayPinCode(name?: string): Promise<void>;
+    /**
+     * VIERAの画面に表示されたPINコードを使い、認証を完了します。
+     *
+     * @param pincode PINコード
+     */
     requestAuth(pincode: string): Promise<VieraAuth>;
-    getEncryptSessionId(): Promise<string>;
+    private getEncryptSessionId;
+    /**
+     * キー(ボタン入力)を送信します。
+     *
+     * @param key 送信するキー
+     */
     sendKey(key: VieraKey): Promise<void>;
+    /**
+     * アプリを起動します。
+     *
+     * @param productId アプリID
+     * @see {@link VieraClient.getApps} アプリIDを取得するメソッド
+     */
     launchApp(productId: string): Promise<void>;
+    /**
+     * アプリのリストを取得します。
+     *
+     * @returns アプリのリスト
+     */
     getApps(): Promise<VieraApp[]>;
+    /**
+     * 電源がONか判定します。
+     *
+     * @returns 電源がONの場合true
+     */
+    isPowerOn(): Promise<boolean>;
+    /**
+     * 音量を取得します。
+     *
+     * @returns 音量
+     */
     getVolume(): Promise<number>;
+    /**
+     * 音量を設定します。
+     *
+     * @param volume 音量
+     */
     setVolume(volume: number): Promise<void>;
+    /**
+     * ミュートかどうかを取得します。
+     *
+     * @returns ミュートの場合、true
+     */
     getMute(): Promise<boolean>;
+    /**
+     * ミュートを設定します。
+     *
+     * @param enable true:ミュート設定 false:ミュート解除
+     */
     setMute(enable: boolean): Promise<void>;
+    /**
+     * デバイス設定を取得します。
+     *
+     * @returns デバイス設定のドキュメント
+     */
     getDeviceInfo(): Promise<Document>;
+    /**
+     * 機能リストを取得します。
+     *
+     * @returns 機能リストのドキュメント
+     */
     getActionList(): Promise<Document>;
     postRemote(commandName: string, commandContent?: xml.XmlObject | xml.XmlObject[], encrypt?: boolean): Promise<Document>;
     postRendering(commandName: string, commandContent?: xml.XmlObject | xml.XmlObject[]): Promise<Document>;
