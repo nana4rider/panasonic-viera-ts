@@ -433,5 +433,5 @@ VieraClient.PATH_ACTION_LIST = '/nrc/sdd_0.xml';
 VieraClient.URN_REMOTE_CONTROL = 'panasonic-com:service:p00NetworkControl:1';
 VieraClient.URN_RENDERING_CONTROL = 'schemas-upnp-org:service:RenderingControl:1';
 VieraClient.PORT = 55000;
-VieraClient.MACRO_INTERVAL = 200;
+VieraClient.MACRO_INTERVAL = 500;
 //# sourceMappingURL=VieraClient.js.map

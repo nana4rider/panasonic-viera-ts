@@ -43,7 +43,7 @@ class VieraClient {
   private static readonly URN_REMOTE_CONTROL = 'panasonic-com:service:p00NetworkControl:1';
   private static readonly URN_RENDERING_CONTROL = 'schemas-upnp-org:service:RenderingControl:1';
   private static readonly PORT = 55000;
-  private static readonly MACRO_INTERVAL = 200;
+  private static readonly MACRO_INTERVAL = 500;
 
   private client: AxiosInstance;
   private session: VieraSession = {};
