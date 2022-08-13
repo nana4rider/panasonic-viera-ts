@@ -10,10 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VieraClient = void 0;
+const xmldom = require("@xmldom/xmldom");
 const axios_1 = require("axios");
 const crypto = require("crypto");
 const xml = require("xml");
-const xmldom = require("xmldom");
 const xpath = require("xpath");
 const VieraError_1 = require("./VieraError");
 const VieraKey_1 = require("./VieraKey");

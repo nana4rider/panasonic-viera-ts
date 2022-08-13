@@ -1,7 +1,7 @@
+import * as xmldom from '@xmldom/xmldom';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import * as crypto from 'crypto';
 import * as xml from 'xml';
-import * as xmldom from 'xmldom';
 import * as xpath from 'xpath';
 import { VieraError } from './VieraError';
 import { VieraKey } from './VieraKey';
