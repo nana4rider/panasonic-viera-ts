@@ -322,8 +322,18 @@ class VieraClient {
 
   async postRemote(commandName: string, commandContent?: xml.XmlObject | xml.XmlObject[],
     encrypt?: boolean): Promise<Document> {
-    return this.post(VieraClient.PATH_CONTROL_NRC, VieraClient.URN_REMOTE_CONTROL,
+    const post = () => this.post(VieraClient.PATH_CONTROL_NRC, VieraClient.URN_REMOTE_CONTROL,
       commandName, commandContent, encrypt);
+    try {
+      return await post();
+    } catch (error) {
+      if (error instanceof VieraError && error.message === 'No such session') {
+        // When my daughter cuts off the power
+        await this.connect();
+        return post();
+      }
+      throw error;
+    }
   }
 
   async postRendering(commandName: string, commandContent?: xml.XmlObject | xml.XmlObject[]): Promise<Document> {

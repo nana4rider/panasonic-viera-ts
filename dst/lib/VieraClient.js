@@ -295,7 +295,18 @@ class VieraClient {
     // common
     postRemote(commandName, commandContent, encrypt) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.post(VieraClient.PATH_CONTROL_NRC, VieraClient.URN_REMOTE_CONTROL, commandName, commandContent, encrypt);
+            const post = () => this.post(VieraClient.PATH_CONTROL_NRC, VieraClient.URN_REMOTE_CONTROL, commandName, commandContent, encrypt);
+            try {
+                return yield post();
+            }
+            catch (error) {
+                if (error instanceof VieraError_1.VieraError && error.message === 'No such session') {
+                    // When my daughter cuts off the power
+                    yield this.connect();
+                    return post();
+                }
+                throw error;
+            }
         });
     }
     postRendering(commandName, commandContent) {

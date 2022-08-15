@@ -1,6 +1,6 @@
 {
   "name": "panasonic-viera-ts",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "bin": {
     "viera-auth-cli": "dst/auth.js"
   },
